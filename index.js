@@ -11,23 +11,23 @@ const setupInputOnce = () =>{
     window.addEventListener("keydown", handleInput, {once: true});
 }
 
-const moveUp = () =>{
-    slide(grid.cellsGroupedByColumn);
+const moveUp = async () =>{
+    await slide(grid.cellsGroupedByColumn);
 }
 
-const moveDown = () =>{
-    slide(grid.cellsGroupedByReversedColumn);
+const moveDown = async () =>{
+    await slide(grid.cellsGroupedByReversedColumn);
 }
 
-const moveLeft = () =>{
-    slide(grid.cellsGroupedByRaw);
+const moveLeft = async () =>{
+    await slide(grid.cellsGroupedByRaw);
 }
 
-const moveRight = () =>{
-    slide(grid.cellsGroupedByReversedRaw);
+const moveRight = async () =>{
+    await slide(grid.cellsGroupedByReversedRaw);
 }
 
-const slideTilesInGroup = group =>{
+const slideTilesInGroup = (group, promises) =>{
     for(let i =1; i < group.length; i++){
         if(group[i].isEmpty()){
             continue;
@@ -46,6 +46,8 @@ const slideTilesInGroup = group =>{
             continue;
         }
 
+        promises.push(cellWithTile.linkedTile.waitForTransitionEnd())
+
         if(targetCell.isEmpty()){
             targetCell.linkTile(cellWithTile.linkedTile);
         } else {
@@ -56,35 +58,45 @@ const slideTilesInGroup = group =>{
     }
 }
 
-const slide = (groupedCellsByColumn) =>{
+const slide = async (groupedCellsByColumn) =>{
+    const promises = [];
+
     console.log(groupedCellsByColumn);
+
     groupedCellsByColumn.forEach(group => {
-        slideTilesInGroup(group);
+        slideTilesInGroup(group, promises);
     });
+
+    await Promise.all(promises);
+
     grid.cells.forEach(cell => {
         cell.hasTileForMerge() && cell.mergeTiles();
     })
 }
 
-const handleInput = (event) =>{
+const handleInput = async (event) =>{
     console.log(event.key)
     switch (event.key){
         case "ArrowUp":
-            moveUp();
+            await moveUp();
             break;
         case "ArrowDown":
-            moveDown();
+            await moveDown();
             break;
         case "ArrowLeft":
-            moveLeft();
+            await moveLeft();
             break;
         case "ArrowRight":
-            moveRight();
+            await moveRight();
             break;
         default:
             setupInputOnce();
             return;
     }
+
+    const newTile = new Tile(board);
+    grid.getRandomEmptyCell().linkTile(newTile)
+
     setupInputOnce();
 }
 
