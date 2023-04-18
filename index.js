@@ -136,6 +136,10 @@ const handleInput = async (event) =>{
 
     const newTile = new Tile(board);
     grid.getRandomEmptyCell().linkTile(newTile)
+    if(!canMoveDown() && !canMoveLeft() && !canMoveRight() && !canMoveUp()){
+        alert("Ты моледец! Это была хорошая попытка попообуй ещё и у тебя обязательно всё получиться :)")
+        return;
+    }
 
     setupInputOnce();
 }
