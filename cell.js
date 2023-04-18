@@ -12,10 +12,29 @@ export class Cell {
 
     linkTile(tile){
         tile.setXY(this.x, this.y);
-        this.likedTile = tile;
+        this.linkedTile = tile;
     }
 
     isEmpty(){
         return !this.linkedTile;
     }
+
+    unlinkTile(){
+        this.linkedTile = null;
+    }
+
+    linkTileForMerge(tile){
+        tile.setXY(this.x, thhis.y);
+        this.linkTileForMerge = tile;
+    }
+
+    hasTiledForMerge(){
+        return !!this.linkedTileForMerge;
+    }
+
+    canAccept(newTile){
+        return this.isEmpty() || (!this.hasTiledForMerge() && this.linkedTile.value === newTile.value);
+    }
+
+    
 }
