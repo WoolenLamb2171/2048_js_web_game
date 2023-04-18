@@ -48,6 +48,7 @@ body{
     animation: show 200ms;
 }
 
+/* при появлении */
 @keyframes show{
     0%{
         opacity: 0.5;
