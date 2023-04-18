@@ -24,7 +24,7 @@ export class Cell {
     }
 
     linkTileForMerge(tile){
-        tile.setXY(this.x, thhis.y);
+        tile.setXY(this.x, this.y);
         this.linkTileForMerge = tile;
     }
 
