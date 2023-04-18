@@ -74,19 +74,59 @@ const slide = async (groupedCellsByColumn) =>{
     })
 }
 
+const canMove = (groupedCells) => {
+    return groupedCells.some(group => canMoveInGroup(group));
+}
+
+const canMoveUp =() =>{
+    console.log("canMoveUp")
+    return canMove(grid.cellsGroupedByColumn);
+}
+
+const canMoveDown = () => {
+    console.log("canMoveDown")
+    return canMove(grid.cellsGroupedByReversedColumn);
+}
+
+const canMoveRight = () => {
+    console.log("canMoveRight")
+    return canMove(grid.cellsGroupedByReversedRaw);
+}
+const canMoveLeft = () => {
+    console.log("canMoveLeft")
+    return canMove(grid.cellsGroupedByRaw);
+}
+
+
 const handleInput = async (event) =>{
     console.log(event.key)
     switch (event.key){
         case "ArrowUp":
+            if(!canMoveUp()){
+                setupInputOnce();
+                return;
+            }
             await moveUp();
             break;
         case "ArrowDown":
+            if(!canMoveDown()){
+                setupInputOnce();
+                return;
+            }
             await moveDown();
             break;
         case "ArrowLeft":
+            if(!canMoveLeft()){
+                setupInputOnce();
+                return;
+            }
             await moveLeft();
             break;
         case "ArrowRight":
+            if(!canMoveRight()){
+                setupInputOnce();
+                return;
+            }
             await moveRight();
             break;
         default:
@@ -101,3 +141,18 @@ const handleInput = async (event) =>{
 }
 
 setupInputOnce();
+
+const canMoveInGroup = (group) =>{
+    return group.some((cell, index) =>{
+        if(index === 0){
+            return false;
+        }
+
+        if(cell.isEmpty()){
+            return false;
+        }
+
+        const targetCell = group[index - 1];
+        return targetCell.canAccept(cell.linkedTile);
+    });
+}
