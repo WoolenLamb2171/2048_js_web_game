@@ -15,7 +15,19 @@ const moveUp = () =>{
     slide(grid.cellsGroupedByColumn);
 }
 
-const slideTilesIbGroup = group =>{
+const moveDown = () =>{
+    slide(grid.cellsGroupedByReversedColumn);
+}
+
+const moveLeft = () =>{
+    slide(grid.cellsGroupedByRaw);
+}
+
+const moveRight = () =>{
+    slide(grid.cellsGroupedByReversedRaw);
+}
+
+const slideTilesInGroup = group =>{
     for(let i =1; i < group.length; i++){
         if(group[i].isEmpty()){
             continue;
@@ -25,7 +37,7 @@ const slideTilesIbGroup = group =>{
 
         let targetCell;
         let j = i - 1;
-        while(j >= 0 && group[i].canAccept(cellWithTile.linkedTile)){
+        while(j >= 0 && group[j].canAccept(cellWithTile.linkedTile)){
             targetCell = group[j];
             j--;
         }
@@ -47,8 +59,11 @@ const slideTilesIbGroup = group =>{
 const slide = (groupedCellsByColumn) =>{
     console.log(groupedCellsByColumn);
     groupedCellsByColumn.forEach(group => {
-        slideTilesIbGroup(group);
+        slideTilesInGroup(group);
     });
+    grid.cells.forEach(cell => {
+        cell.hasTileForMerge() && cell.mergeTiles();
+    })
 }
 
 const handleInput = (event) =>{
@@ -58,10 +73,13 @@ const handleInput = (event) =>{
             moveUp();
             break;
         case "ArrowDown":
+            moveDown();
             break;
         case "ArrowLeft":
+            moveLeft();
             break;
         case "ArrowRight":
+            moveRight();
             break;
         default:
             setupInputOnce();
