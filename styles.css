@@ -29,7 +29,7 @@ body{
 }
 
 .tile{
-    --y: 1;
+    --y: 0;
     --x: 2;
     position: absolute;
     top: calc(var(--y) * (var(--cell-size) + var(--cell-gap)));
@@ -44,4 +44,13 @@ body{
     font-size: 7.5vmin;
     font-weight: bold;
     background: yellow;
+    transition: 100ms;
+    animation: show 200ms;
+}
+
+@keyframes show{
+    0%{
+        opacity: 0.5;
+        transform: scale(0);
+    }
 }
